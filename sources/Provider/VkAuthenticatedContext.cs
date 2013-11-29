@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
@@ -36,12 +32,12 @@ namespace Duke.Owin.VkontakteMiddleware.Provider
                 ExpiresIn = TimeSpan.FromSeconds(expiresValue);
             }
 
-            Id = TryGetValue("uid");
-            Name = TryGetValue("first_name");
-            LastName = TryGetValue("last_name");
-            UserName = TryGetValue("screen_name");
-            Nickname = TryGetValue("nickname");
-            Link = TryGetValue("photo_50");
+			Id = TryGetPropertyValue("uid");
+			Name = TryGetPropertyValue("first_name");
+			LastName = TryGetPropertyValue("last_name");
+			UserName = TryGetPropertyValue("screen_name");
+			Nickname = TryGetPropertyValue("nickname");
+			Link = TryGetPropertyValue("photo_50");
 
         }
 
@@ -129,7 +125,12 @@ namespace Duke.Owin.VkontakteMiddleware.Provider
         /// </summary>
         public AuthenticationProperties Properties { get; set; }
 
-        private string TryGetValue(string propertyName)
+		/// <summary>
+		/// Returns value of the property with the specified name in exist
+		/// </summary>
+		/// <param name="propertyName">The name of the property</param>
+		/// <returns>Value of the property</returns>
+		public string TryGetPropertyValue(string propertyName)
         {
             XmlNodeList elemList = UserXml.GetElementsByTagName(propertyName);
             if (elemList != null)

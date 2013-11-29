@@ -197,25 +197,25 @@ namespace Duke.Owin.VkontakteMiddleware
                 tokenResponse.EnsureSuccessStatusCode();
                 string text = await tokenResponse.Content.ReadAsStringAsync();
                 //IFormCollection form = WebHelpers.ParseForm(text);
-                var JsonResponse = JsonConvert.DeserializeObject<dynamic>(text);
+                var jsonResponse = JsonConvert.DeserializeObject<dynamic>(text);
                 //JObject TokenResponse = JObject.Parse(text);
 
-                string accessToken = JsonResponse["access_token"];
-                string expires = JsonResponse["expires_in"];
-                string userid = JsonResponse["user_id"];
+                string accessToken = jsonResponse["access_token"];
+                string expires = jsonResponse["expires_in"];
+                string userid = jsonResponse["user_id"];
 
                 //public method which dont require token
-                string userInfoLink = GraphApiEndpoint + "users.get.xml" +
-                                      "?user_ids=" + Uri.EscapeDataString(userid) +
-                                      "&fields=" + Uri.EscapeDataString("nickname,screen_name,photo_50");
+				string userInfoLink = GraphApiEndpoint + "users.get.xml" +
+									  "?user_ids=" + Uri.EscapeDataString(userid) +
+                                      "&fields=" + Uri.EscapeDataString(Options.Fields);
 
                 HttpResponseMessage graphResponse = await _httpClient.GetAsync(userInfoLink, Request.CallCancelled);
                 graphResponse.EnsureSuccessStatusCode();
                 text = await graphResponse.Content.ReadAsStringAsync();
-                XmlDocument UserInfoResponseXml = new XmlDocument();
-                UserInfoResponseXml.LoadXml(text);
+                var userInfoResponseXml = new XmlDocument();
+                userInfoResponseXml.LoadXml(text);
 
-                var context = new VkAuthenticatedContext(Context, UserInfoResponseXml, accessToken, expires);
+                var context = new VkAuthenticatedContext(Context, userInfoResponseXml, accessToken, expires);			
                 context.Identity = new ClaimsIdentity(
                     Options.AuthenticationType,
                     ClaimsIdentity.DefaultNameClaimType,

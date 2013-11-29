@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using Duke.Owin.VkontakteMiddleware.Provider;
@@ -27,6 +23,7 @@ namespace Duke.Owin.VkontakteMiddleware
             CallbackPath = new PathString("/signin-vkontakte");
             AuthenticationMode = AuthenticationMode.Passive;
             Scope = "";
+			Fields = "nickname,screen_name,photo_50";
             Version = "5.3";
             BackchannelTimeout = TimeSpan.FromSeconds(60);
         }
@@ -108,6 +105,12 @@ namespace Duke.Owin.VkontakteMiddleware
         /// Can be something like that "audio,video,pages" and etc. More info http://vk.com/dev/permissions
         /// </summary>
         public string Scope { get; set; }
+
+		/// <summary>
+		/// A list of userInfo fields to request.
+		/// Can be something like that "sex,bdate,country" and etc. More info http://vk.com/dev/users.get
+		/// </summary>
+		public string Fields { get; set; }
 
         /// <summary>
         /// Get or set vk.com api version.
